@@ -103,14 +103,14 @@ public class Field {
     }
 
     private boolean checkForWinner(Cell cell) {
-        int x = cell.getX() - cellsForWin;
-        int y = cell.getY() - cellsForWin;
+        int x = cell.getX() - cellsForWin + 1;
+        int y = cell.getY() - cellsForWin + 1;
         x = x < 1 ? 1 : x;
         y = y < 1 ? 1 : y;
         Cell leftTop;
         for (int i = x; i <= cell.getX() - x + 1 && i + cellsForWin - 1 <= cntLines; i++) {
             for (int j = y; j <= cell.getY() - y + 1 && j + cellsForWin - 1 <= cntLines; j++) {
-                leftTop = getCell(1,1);
+                leftTop = getCell(i,j);
                 if (checkSquare(cell, leftTop)) {
                     return true;
                 }
@@ -120,75 +120,71 @@ public class Field {
     }
 
     private boolean checkSquare(Cell cell, Cell leftTop) {
-        int sum = 0, valInt;
+        int sum = 0, valInt = -1;
         int x = cell.getX();
         int y = cell.getY();
         int xLeft = leftTop.getX();
         int yTop = leftTop.getY();
-        int xRight = xLeft + cellsForWin;
-        int yBottom = yTop + cellsForWin;
+        int xRight = xLeft + cellsForWin - 1;
+        int yBottom = yTop + cellsForWin - 1;
 
         //HORIZONTAL LINE
-        for (int i = xLeft; i < xRight; i++) {
+        for (int i = xLeft; i <= xRight; i++) {
             valInt = getCell(i,y).getValInt();
             if (valInt == -1) {
-                return false;
+                break;
             } else {
                 sum += valInt;
             }
         }
-        if (sum% cellsForWin == 0) {
+        if (valInt != -1 && sum % cellsForWin == 0) {
             return true;
-        } else {
-            sum = 0;
         }
 
+        sum = 0;
         //VERTICAL LINE
-        for (int i = yTop; i < yBottom; i++) {
+        for (int i = yTop; i <= yBottom; i++) {
             valInt = getCell(x,i).getValInt();
             if (valInt == -1) {
-                return false;
+                break;
             } else {
                 sum += valInt;
             }
         }
-        if (sum% cellsForWin == 0) {
+        if (valInt != -1 && sum % cellsForWin == 0) {
             return true;
-        } else {
-            sum = 0;
         }
 
+        sum = 0;
         //MAIN DIAGONAL
-        if (x==y) {
-            for (int i = xLeft; i < xRight; i++) {
+       // if (x==y) {
+            for (int i = xLeft; i <= xRight; i++) {
                 valInt = getCell(i,i).getValInt();
                 if (valInt == -1) {
-                    return false;
+                    break;
                 } else {
                     sum += valInt;
                 }
             }
-            if (sum% cellsForWin == 0) {
+            if (valInt != -1 && sum % cellsForWin == 0) {
                 return true;
-            } else {
-                sum = 0;
             }
+     //   }
+
+        sum = 0;
+        //INCIDENTAL DIAGONAL
+        for (int i = xLeft; i <= xRight; i++) {
+            valInt = getCell(i, cellsForWin - yTop + 1).getValInt();
+            if (valInt == -1) {
+                break;
+            } else {
+                sum += valInt;
+            }
+        }
+        if (valInt != -1 && sum % cellsForWin == 0) {
+            return true;
         }
 
-        //INCIDENTAL DIAGONAL
-        if (x + y == cellsForWin + 1) {
-            for (int i = xLeft; i < xRight; i++) {
-                valInt = getCell(i, cellsForWin - i + 1).getValInt();
-                if (valInt == -1) {
-                    return false;
-                } else {
-                    sum += valInt;
-                }
-            }
-            if (sum% cellsForWin == 0) {
-                return true;
-            }
-        }
         return false;
     }
 }

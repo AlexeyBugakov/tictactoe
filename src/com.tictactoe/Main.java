@@ -6,7 +6,6 @@ import com.tictactoe.io.IO;
 public class Main {
 
     public static void main(String[] args) {
-        System.out.println("q");
         Game game = new Game();
         while (true) {
             game.playGame();
