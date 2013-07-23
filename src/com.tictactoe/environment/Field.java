@@ -16,7 +16,7 @@ public class Field {
     private Cell[][] cells;
 
     public Field() {
-        cntLines = IO.getInt("\nВведите размерность поля: ", "Введена не верная размерность поля!", MIN_CNT_LINES, MAX_CNT_LINES);
+        //cntLines = IO.getInt("\nВведите размерность поля: ", "Введена не верная размерность поля!", MIN_CNT_LINES, MAX_CNT_LINES);
         cntLines = 3;
         if (cntLines <= 5) {
             CELLS_FOR_WIN = 3;
