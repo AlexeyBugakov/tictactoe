@@ -15,16 +15,16 @@ public class Game {
     }
 
     public Game() {
-        field = new Field();
         for (int i = 0; i < players.length; i++) {
             players[i] = new Player(i);
         }
+        field = new Field();
         step = 1;
     }
 
     public Game(Player[] players) {
-        field = new Field();
         this.players = players;
+        field = new Field();
         step = 1;
     }
 

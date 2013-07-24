@@ -2,27 +2,23 @@ package com.tictactoe.environment;
 
 public class Cell {
     private static final char[] CHAR_VALUES = {'O', 'X'};
-    private static final int DEFAULT_VAL_INT = -1;
     private static final char DEFAULT_VAL_CHAR = ' ';
 
     private int x, y;
-    private char valChar = ' ';
-    private int valInt = -1;
+    private char val = ' ';
 
     public Cell(int x, int y) {
         this.x = x;
         this.y = y;
-        this.valInt = DEFAULT_VAL_INT;
-        this.valChar = DEFAULT_VAL_CHAR;
+        this.val = DEFAULT_VAL_CHAR;
     }
 
-    public int getValInt() {
-        return valInt;
+    public char getVal() {
+        return val;
     }
 
     public void setVal(int step) {
-        this.valInt = step % 2;
-        this.valChar = CHAR_VALUES[this.valInt];
+        this.val = CHAR_VALUES[step % 2];
     }
 
     public int getY() {
@@ -33,8 +29,23 @@ public class Cell {
         return x;
     }
 
+    public boolean isWinner(Cell[] cells, char winner) {
+        for (Cell cell : cells) {
+            if (cell.val != winner) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public boolean isFree() {
+        return (val == DEFAULT_VAL_CHAR);
+    }
+
     @Override
     public String toString() {
-        return "[" + valChar + "]";
+        return "[" + val + "]";
     }
+
+
 }
