@@ -17,9 +17,9 @@ public class Field {
     public Field() {
         cntLines = IO.getInt("\nВведите размерность поля: ", "Введена не верная размерность поля!", MIN_CNT_LINES, MAX_CNT_LINES);
 
-        if (cntLines <= 5) {
+        if (cntLines == 3) {
             cellsForWin = 3;
-        } else if (cntLines <= 7) {
+        } else if (cntLines <= 6) {
             cellsForWin = 4;
         } else {
             cellsForWin = 5;
@@ -87,7 +87,7 @@ public class Field {
             x = IO.getInt("Введите столбец: ", "Введен не верный столбец!", 1, cntLines);
             y = IO.getInt("Введите строку: ", "Введена не верная строка!", 1, cntLines);
             cell = getCell(x, y);
-            if (cell.getValInt() == -1) {
+            if (cell.isFree()) {
                 break;
             } else {
                 System.out.println("Ячейка [" + x + "] [" + y + "] уже занята! Попробуйте снова.");
@@ -110,7 +110,7 @@ public class Field {
         Cell leftTop;
         for (int i = x; i <= cell.getX() - x + 1 && i + cellsForWin - 1 <= cntLines; i++) {
             for (int j = y; j <= cell.getY() - y + 1 && j + cellsForWin - 1 <= cntLines; j++) {
-                leftTop = getCell(i,j);
+                leftTop = getCell(i, j);
                 if (checkSquare(cell, leftTop)) {
                     return true;
                 }
@@ -120,71 +120,48 @@ public class Field {
     }
 
     private boolean checkSquare(Cell cell, Cell leftTop) {
-        int sum = 0, valInt = -1;
         int x = cell.getX();
         int y = cell.getY();
-        int xLeft = leftTop.getX();
-        int yTop = leftTop.getY();
-        int xRight = xLeft + cellsForWin - 1;
-        int yBottom = yTop + cellsForWin - 1;
+        char winner = cell.getVal();
+        Cell[] cells = new Cell[cellsForWin];
+        int left = leftTop.getX(), top = leftTop.getY();
+        int right = left + cellsForWin - 1, bottom = top + cellsForWin - 1;
 
         //HORIZONTAL LINE
-        for (int i = xLeft; i <= xRight; i++) {
-            valInt = getCell(i,y).getValInt();
-            if (valInt == -1) {
-                break;
-            } else {
-                sum += valInt;
-            }
+        for (int i = left; i <= right; i++) {
+            cells[i - left] = getCell(i, y);
         }
-        if (valInt != -1 && sum % cellsForWin == 0) {
+        if (cell.isWinner(cells, winner)) {
             return true;
         }
 
-        sum = 0;
         //VERTICAL LINE
-        for (int i = yTop; i <= yBottom; i++) {
-            valInt = getCell(x,i).getValInt();
-            if (valInt == -1) {
-                break;
-            } else {
-                sum += valInt;
-            }
+        for (int i = top; i <= bottom; i++) {
+            cells[i - top] = getCell(x, i);
         }
-        if (valInt != -1 && sum % cellsForWin == 0) {
+        if (cell.isWinner(cells, winner)) {
             return true;
         }
 
-        sum = 0;
         //MAIN DIAGONAL
-       // if (x==y) {
-            for (int i = xLeft; i <= xRight; i++) {
-                valInt = getCell(i,i).getValInt();
-                if (valInt == -1) {
-                    break;
-                } else {
-                    sum += valInt;
-                }
+        if (x - left == y - top) {
+            for (int i = left; i <= right; i++) {
+                cells[i - left] = getCell(i, i + y - x);
             }
-            if (valInt != -1 && sum % cellsForWin == 0) {
+            if (cell.isWinner(cells, winner)) {
                 return true;
             }
-     //   }
+        }
 
-        sum = 0;
         //INCIDENTAL DIAGONAL
-        for (int i = xLeft; i <= xRight; i++) {
-            valInt = getCell(i, cellsForWin - yTop + 1).getValInt();
-            if (valInt == -1) {
-                break;
-            } else {
-                sum += valInt;
+        if (x - left == cellsForWin - (y - top + 1)) {
+            for (int i = left; i <= right; i++) {
+                cells[i - left] = getCell(i, bottom - (i - left));
+            }
+            if (cell.isWinner(cells, winner)) {
+                return true;
             }
         }
-        if (valInt != -1 && sum % cellsForWin == 0) {
-            return true;
-        }
-
         return false;
     }
 }
